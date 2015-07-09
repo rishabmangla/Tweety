@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".TweetActivity">
+
+    <item
+        android:id="@+id/update_tweet"
+        android:title="@string/updateTweet"
+        android:icon="@drawable/ic_launcher"
+        android:showAsAction="always"/>
+</menu>

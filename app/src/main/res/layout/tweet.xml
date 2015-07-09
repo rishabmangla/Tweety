@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="3dp"
+    android:paddingRight="3dp"
+    android:paddingBottom="5dp"
+    android:orientation="vertical" >
+
+
+    <EditText
+        android:id="@+id/tweettext"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:lines="3"
+        android:hint="update your status here"
+        android:singleLine="false" />
+
+    <Button
+        android:id="@+id/dotweet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Image" />
+
+</LinearLayout>
