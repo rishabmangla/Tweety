@@ -12,6 +12,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Hashtable;
 
@@ -73,9 +76,14 @@ public class TweetLineActivity extends Activity {
             //no user preferences so prompt to sign in
             setContentView(R.layout.main);
 
-            //authentication
-            SetupConnection connect = new SetupConnection();
-            connect.execute();
+            if(isNetworkConnected()) {
+                //authentication
+                SetupConnection connect = new SetupConnection();
+                connect.execute();
+            }else {
+                Toast.makeText(this, "Network not connected", Toast.LENGTH_LONG).show();
+                finish();
+            }
             Log.i("rishab", "onCreate ");
 
             //setup button for click listener
@@ -97,16 +105,28 @@ public class TweetLineActivity extends Activity {
 
     }
 
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        if (ni == null) {
+            // There are no active networks.
+            return false;
+        } else
+            return true;
+    }
+
     //AsyncTask to setup the initial connection and get the auth request
-    class SetupConnection extends AsyncTask<String, Void, Void> {
+    class SetupConnection extends AsyncTask<String, Void, Boolean> {
 
         @Override
-        protected Void doInBackground(String... params) {
-            Log.i("rishab","SetupConnection pichwaade me karr ");
+        protected Boolean doInBackground(String... params) {
+            Log.i("rishab", "SetupConnection pichwaade me karr ");
 
             mTwitter = new TwitterFactory().getInstance();
+            Log.i("rishab", "setOAuthConsumer 1");
             //pass developer key and secret
             mTwitter.setOAuthConsumer(TWIT_KEY, TWIT_SECRET);
+            Log.i("rishab","setOAuthConsumer 2");
             //try to get request token
             try
             {
@@ -117,8 +137,18 @@ public class TweetLineActivity extends Activity {
             catch(TwitterException te) {
                 Log.e(LOG_TAG, "TE " + te.getMessage());
                 Log.i("mangla", "catch " + te.getMessage());
+                return false;
             }
-            return null;
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean check) {
+            super.onPostExecute(check);
+            if(!check) {
+                Toast.makeText(TweetLineActivity.this, "Network not connected", Toast.LENGTH_LONG).show();
+                finish();
+            }
         }
     }
 
@@ -170,7 +200,9 @@ public class TweetLineActivity extends Activity {
                         .commit();
                 //display the tweetline
                 listHomeTweets();
-
+            }else {
+                Toast.makeText(TweetLineActivity.this, "Failed to get access token: Network not connected", Toast.LENGTH_LONG).show();
+                finish();
             }
             super.onPostExecute(accToken);
         }
