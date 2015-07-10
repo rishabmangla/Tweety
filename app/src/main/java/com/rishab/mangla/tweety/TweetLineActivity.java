@@ -170,6 +170,7 @@ public class TweetLineActivity extends Activity {
                         .commit();
                 //display the tweetline
                 listHomeTweets();
+
             }
             super.onPostExecute(accToken);
         }
